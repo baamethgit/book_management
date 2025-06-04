@@ -23,7 +23,7 @@ mvn spring-boot:run
 ```bash
 cd bookmanagementFront
 npm install
-npx ng serve
+npm run start
 ```
 
 ## Utilisation
