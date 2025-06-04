@@ -49,4 +49,6 @@ public class AuthController {
     public ResponseEntity<String> test() {
         return ResponseEntity.ok("API fonctionne !");
     }
+
+
 }

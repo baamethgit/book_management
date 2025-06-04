@@ -1,0 +1,103 @@
+<div class="home-container">
+  <div class="stats-section" *ngIf="stats">
+    <h1>Ma Bibliothèque</h1>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.totalBooks }}</div>
+        <div class="stat-label">Livres</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.finishedBooks }}</div>
+        <div class="stat-label">Terminés</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.totalPagesRead }}</div>
+        <div class="stat-label">Pages lues</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">{{ stats.averagePagesPerDay }}</div>
+        <div class="stat-label">Pages/jour</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions-section">
+    <button class="btn-primary" (click)="navigateToAddBook()">
+      + Ajouter un livre
+    </button>
+    <button class="btn-secondary" (click)="navigateToCategories()">
+      Gérer les catégories
+    </button>
+  </div>
+
+  <!-- Filtres -->
+  <div class="filters-section">
+    <div class="filter-buttons">
+      <button 
+        class="filter-btn" 
+        [class.active]="selectedCategory === null"
+        (click)="filterByCategory(null)">
+        Tous
+      </button>
+      <button 
+        *ngFor="let category of categories"
+        class="filter-btn" 
+        [class.active]="selectedCategory === category.id"
+        (click)="filterByCategory(category.id)">
+        {{ category.name }} ({{ category.bookCount }})
+      </button>
+    </div>
+  </div>
+
+  <!-- Message d'erreur -->
+  <div *ngIf="error" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    Chargement...
+  </div>
+
+  <!-- Liste des livres -->
+  <div *ngIf="!loading && !error" class="books-section">
+    <div *ngIf="books.length === 0" class="empty-state">
+      <p>Aucun livre trouvé.</p>
+      <button class="btn-primary" (click)="navigateToAddBook()">
+        Ajouter votre premier livre
+      </button>
+    </div>
+
+    <div *ngIf="books.length > 0" class="books-grid">
+      <div *ngFor="let book of books" class="book-card">
+        <div class="book-header">
+          <h3 class="book-title" (click)="navigateToBook(book.id)">{{ book.title }}</h3>
+          <div class="book-actions">
+            <button class="btn-edit" (click)="navigateToBook(book.id)">✏️</button>
+            <button class="btn-delete" (click)="deleteBook(book)">🗑️</button>
+          </div>
+        </div>
+        
+        <p class="book-author">{{ book.author }}</p>
+        
+        <div class="book-progress">
+          <div class="progress-bar">
+            <div class="progress-fill" [style.width.%]="book.progressPercentage"></div>
+          </div>
+          <span class="progress-text">
+            {{ book.currentPage }}/{{ book.totalPages }} pages ({{ book.progressPercentage }}%)
+          </span>
+        </div>
+        
+        <div class="book-status">
+          <span *ngIf="book.isFinished" class="status-finished">✓ Terminé</span>
+          <span *ngIf="!book.isFinished" class="status-reading">📖 En cours</span>
+          <span *ngIf="book.category" class="book-category">{{ book.category.name }}</span>
+        </div>
+        
+        <p *ngIf="book.notes" class="book-notes">{{ book.notes }}</p>
+      </div>
+    </div>
+  </div>
+</div>

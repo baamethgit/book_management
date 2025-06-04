@@ -31,17 +31,12 @@ public class SpringSecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-
-    // dis à Spring Security comment vérifier email/password.
     @Bean
     public AuthenticationProvider authenticationProvider() {
-        // DaoAuthenticationProvider = classe de Spring qui vérifie email/password
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
 
-        // Tu lui dis : "utilise MON service pour charger les users"
         authProvider.setUserDetailsService(customUserDetailsService);
 
-        // Tu lui dis : "utilise CET encodeur pour vérifier les mots de passe"
         authProvider.setPasswordEncoder(passwordEncoder());
 
         return authProvider;
@@ -57,17 +52,15 @@ public class SpringSecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                // Dit à Spring d'utiliser TON fournisseur d'authentification
                 .authenticationProvider(authenticationProvider())
-                // Ajoute TON filtre JWT avant le filtre de base de Spring
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
-    //  C'est le "chef d'orchestre" de l'authentification
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        // Spring le crée automatiquement avec ta configuration
+
         return config.getAuthenticationManager();
     }
 

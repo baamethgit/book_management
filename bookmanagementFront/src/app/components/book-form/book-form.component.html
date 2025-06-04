@@ -1,0 +1,140 @@
+<div class="book-form-container">
+  <div class="book-form-card">
+    <!-- Header -->
+    <div class="form-header">
+      <h2>{{ isEditMode ? 'Modifier le livre' : 'Ajouter un livre' }}</h2>
+      <button class="btn-back" (click)="goBack()">← Retour</button>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="error" class="error-message">{{ error }}</div>
+    <div *ngIf="success" class="success-message">{{ success }}</div>
+    <div *ngIf="loading" class="loading">Chargement...</div>
+
+    <!-- Informations du livre -->
+    <form [formGroup]="bookForm" (ngSubmit)="onSubmitBook()" class="book-section">
+      <h3>Informations du livre</h3>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="title">Titre *</label>
+          <input
+            type="text"
+            id="title"
+            formControlName="title"
+            [class.error]="isFieldInvalid(bookForm, 'title')"
+            placeholder="Titre du livre"
+          />
+          <div *ngIf="isFieldInvalid(bookForm, 'title')" class="field-error">
+            {{ getFieldError(bookForm, 'title') }}
+          </div>
+        </div>
+
+                <div class="form-group">
+          <label for="author">Auteur *</label>
+          <input
+            type="text"
+            id="author"
+            formControlName="author"
+            [class.error]="isFieldInvalid(bookForm, 'author')"
+            placeholder="Nom de l'auteur"
+          />
+          <div *ngIf="isFieldInvalid(bookForm, 'author')" class="field-error">
+            {{ getFieldError(bookForm, 'author') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="totalPages">Nombre total de pages *</label>
+          <input
+            type="number"
+            id="totalPages"
+            formControlName="totalPages"
+            [class.error]="isFieldInvalid(bookForm, 'totalPages')"
+            placeholder="Ex: 300"
+          />
+          <div *ngIf="isFieldInvalid(bookForm, 'totalPages')" class="field-error">
+            {{ getFieldError(bookForm, 'totalPages') }}
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="categoryId">Catégorie</label>
+          <select id="categoryId" formControlName="categoryId">
+            <option value="">-- Aucune --</option>
+            <option *ngFor="let category of categories" [value]="category.id">
+              {{ category.name }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea
+          id="notes"
+          formControlName="notes"
+          placeholder="Notes facultatives..."
+        ></textarea>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn-primary" type="submit" [disabled]="loading">
+          {{ isEditMode ? 'Mettre à jour' : 'Ajouter' }}
+        </button>
+        <button *ngIf="isEditMode" type="button" class="btn-secondary" (click)="deleteBook()">
+          Supprimer
+        </button>
+      </div>
+    </form>
+
+    <form
+      *ngIf="showProgressSection"
+      [formGroup]="progressForm"
+      (ngSubmit)="onSubmitProgress()"
+      class="progress-section"
+    >
+      <h3>Progression</h3>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="currentPage">Page actuelle *</label>
+          <input
+            type="number"
+            id="currentPage"
+            formControlName="currentPage"
+            [class.error]="isFieldInvalid(progressForm, 'currentPage')"
+            placeholder="Ex: 150"
+          />
+          <div *ngIf="isFieldInvalid(progressForm, 'currentPage')" class="field-error">
+            {{ getFieldError(progressForm, 'currentPage') }}
+          </div>
+        </div>
+
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="isFinished" />
+            Terminé ?
+          </label>
+        </div>
+      </div>
+
+      <!-- <div class="form-group">
+        <label for="notesProgress">Notes de lecture</label>
+        <textarea
+          id="notesProgress"
+          formControlName="notes"
+          placeholder="Notes liées à votre lecture..."
+        ></textarea>
+      </div> -->
+
+      <div class="form-actions">
+        <button class="btn-primary" type="submit" [disabled]="loading">
+          Mettre à jour la progression
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
